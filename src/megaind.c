@@ -21,7 +21,7 @@
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)1
-#define VERSION_MINOR	(int)8
+#define VERSION_MINOR	(int)9
 
 #define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
 
@@ -473,7 +473,7 @@ int doOwbIdGet(int argc, char *argv[])
 
 	memcpy(&romID, &buff[0], 8);
 	
-	printf("0x%llx\n", romID);
+	printf("0x%lx\n", romID);
 	return OK;
 }
 
@@ -601,6 +601,8 @@ const CliCmdType *gCmdArray[] =
 	&CMD_WDT_CLR_RESETS_COUNT,
 	&CMD_RS485_READ,
 	&CMD_RS485_WRITE,
+	&CMD_RS485_RTS_SET,
+	&CMD_RS485_RTS_GET,
 	&CMD_RTC_GET,
 	&CMD_RTC_SET,
 	&CMD_OWB_RD,

@@ -68,6 +68,30 @@ int rs485Get(int dev)
 	return OK;
 }
 
+int rtsEnSet(int dev, u8 enable)
+{
+	u8 buff[1];
+	buff[0] = enable ? 1 : 0;
+	if (OK != i2cMem8Write(dev, I2C_MEM_RPI_RTS_EN, buff, 1))
+	{
+		printf("Fail to write RS485 RTS enable setting!\n");
+		return ERROR;
+	}
+	return OK;
+}
+
+int rtsEnGet(int dev, u8 *enable)
+{
+	u8 buff[1];
+	if (OK != i2cMem8Read(dev, I2C_MEM_RPI_RTS_EN, buff, 1))
+	{
+		printf("Fail to read RS485 RTS enable setting!\n");
+		return ERROR;
+	}
+	*enable = buff[0] ? 1 : 0;
+	return OK;
+}
+
 int doRs485Read(int argc, char *argv[]);
 const CliCmdType CMD_RS485_READ =
 	{
@@ -154,6 +178,80 @@ int doRs485Write(int argc, char *argv[])
 			return ERROR;
 		}
 		printf("done\n");
+	}
+	else
+	{
+		return ARG_CNT_ERR;
+	}
+	return OK;
+}
+
+int doRs485RtsSet(int argc, char *argv[]);
+const CliCmdType CMD_RS485_RTS_SET =
+	{
+		"dirrpiwr",
+		2,
+		&doRs485RtsSet,
+		"\tdirrpiwr:	Set the RS485 Direction control by rpi GPIO17 enable/disable\n",
+		"\tUsage:		megaind <id> dirrpiwr <0|1>\n",
+		"",
+		"\tExample:		megaind 0 dirrpiwr 1; Enable RS485 direction control by rpi GPIO17 on Board #0\n"
+	};
+int doRs485RtsSet(int argc, char *argv[])
+{
+	int dev = 0;
+	u8 enable = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+	if (argc == 4)
+	{
+		enable = (0xff & atoi(argv[3])) ? 1 : 0;
+		if (OK != rtsEnSet(dev, enable))
+		{
+			return ERROR;
+		}
+		printf("done\n");
+	}
+	else
+	{
+		return ARG_CNT_ERR;
+	}
+	return OK;
+}	
+int doRs485RtsGet(int argc, char *argv[]);
+const CliCmdType CMD_RS485_RTS_GET =
+	{
+		"dirrpird",
+		2,
+		&doRs485RtsGet,
+		"\tdirrpird:	Get the RS485 Direction control by rpi GPIO17 enable/disable\n",
+		"\tUsage:		megaind <id> dirrpird\n",
+		"",
+		"\tExample:		megaind 0 dirrpird; Get direction control by rpi GPIO17 on Board #0\n"
+	};
+int doRs485RtsGet(int argc, char *argv[])
+{
+	int dev = 0;
+	u8 enable = 0;
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+	if (argc == 3)
+	{
+		if (OK != rtsEnGet(dev, &enable))
+		{
+			return ERROR;
+		}
+		printf("RS485 Direction control by rpi GPIO17 is %s\n", enable ? "enabled" : "disabled");
 	}
 	else
 	{

@@ -104,7 +104,7 @@ enum
 	I2C_MEM_DIAG_24V_1,
 	I2C_MEM_DIAG_5V,
 	I2C_MEM_DIAG_5V_1,
-	CAN_REC_MPS_MEM,
+	I2C_MEM_RPI_RTS_EN, //CAN_REC_MPS_MEM,
 
 	I2C_MEM_REVISION_MAJOR = 0x78,
 	I2C_MEM_REVISION_MINOR,
@@ -230,6 +230,8 @@ int doBoardInit(int stack);
 // RS-485 CLI structures
 	extern const CliCmdType CMD_RS485_READ;
 	extern const CliCmdType CMD_RS485_WRITE;
+	extern const CliCmdType CMD_RS485_RTS_SET;
+	extern const CliCmdType CMD_RS485_RTS_GET;
 	
 // analog in/out CLI structures
 	extern const CliCmdType CMD_UOUT_READ;
@@ -252,7 +254,7 @@ int doBoardInit(int stack);
 	extern const CliCmdType CMD_UOUT_CAL_RST;
 	extern const CliCmdType CMD_IOUT_CAL_RST;
 	extern const CliCmdType CMD_OD_FREQ_WRITE;
-
+	
 	
 // digital control OD
 	extern const CliCmdType CMD_DOD_READ;
