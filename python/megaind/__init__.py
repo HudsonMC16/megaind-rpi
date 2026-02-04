@@ -88,6 +88,7 @@ def getCpuTemp(stack):
 U0_10_IN_VAL1_ADD = 28
 U_PM_10_IN_VAL1_ADD = 36
 U_0_10_OUT_VAL1_ADD = 4
+I2C_MEM_PM_IN_SWITCH = 122
 
 
 def get0_10In(stack, channel):
@@ -106,6 +107,36 @@ def getpm10In(stack, channel):
     val = getWord(bus, hwAdd, U_PM_10_IN_VAL1_ADD + (2 * (channel - 1)))
     bus.close()
     return val / VOLT_TO_MILIVOLT - 10
+
+def setUinRange(stack, channel, range):
+    checkChannel(channel)
+    hwAdd = checkStack(stack)
+    bus = smbus2.SMBus(BUS_NO)
+    try:
+        val = bus.read_byte_data(hwAdd, I2C_MEM_PM_IN_SWITCH) #red the existing value
+        if range == 0:
+            val &= ~(1 << (channel - 1))  # set to 0-10V
+        else:
+            val |= 1 << (channel - 1)     # set to -10 to +10V
+        bus.write_byte_data(hwAdd, I2C_MEM_PM_IN_SWITCH, val)
+    except Exception as e:
+        bus.close()
+        raise Exception("Fail to Write input range with exception " + str(e))
+    bus.close()
+
+def getUinRange(stack, channel):
+    checkChannel(channel)
+    hwAdd = checkStack(stack)
+    bus = smbus2.SMBus(BUS_NO)
+    try:
+        val = bus.read_byte_data(hwAdd, I2C_MEM_PM_IN_SWITCH)
+    except Exception as e:
+        bus.close()
+        raise Exception("Fail to read with exception " + str(e))
+    bus.close()
+    if (1 << (channel - 1)) & val != 0:
+        return 1
+    return 0    
 
 
 def get0_10Out(stack, channel):

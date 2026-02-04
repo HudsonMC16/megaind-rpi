@@ -88,6 +88,25 @@ ch - selected channel number [1..4]
 
 return - value in volts 
 
+### setUinRange(stack, channel, range)
+Set the input range for one voltage input channel
+
+stack - stack level of the megaind  card (selectable from address jumpers [0..7])
+
+channel - selected channel number [1..4]
+
+range - select range 0= 0..10V; 1 = -10..10V
+
+retrn none
+
+### getUinRange(stack, channel)
+Get the input range for one voltage input channel
+
+stack - stack level of the megaind  card (selectable from address jumpers [0..7])
+
+channel - selected channel number [1..4]
+
+return 0 for 0..10V; 1 for -10..10V
 
 ### get0_10Out(stack, ch)
 Get the selected output 0-10V channel value in volts  
